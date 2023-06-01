@@ -103,9 +103,9 @@ export default function Dashboard() {
   const [prediction_goles, setPrediction_goles] = useState([]);
   const [prediction_precio, setPrediction_precio] = useState([]);
 
-  // Set de jugadores obtenido por un fetch en http://127.0.0.1:5000/obtener_jugadores
+  // Set de jugadores obtenido por un fetch en https://img-back-l2mniuwzaq-uc.a.run.app/obtener_jugadores
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/obtener_jugadores', {
+    fetch('https://img-back-l2mniuwzaq-uc.a.run.app/obtener_jugadores', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -121,9 +121,9 @@ export default function Dashboard() {
       });
   }, [body_fetch_jugadores]);
 
-  // Set de equipos obtenido por un fetch en http://127.0.0.1:5000/partidos
+  // Set de equipos obtenido por un fetch en https://img-back-l2mniuwzaq-uc.a.run.app/partidos
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/partidos', {
+    fetch('https://img-back-l2mniuwzaq-uc.a.run.app/partidos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -186,8 +186,8 @@ export default function Dashboard() {
     // Quiero obtener el equipo B de selected_partido
     let equipo_visitante_partido = selected_partido.split(" VS ")[1];
 
-    // Hago un fetch a http://127.0.0.1:5000/predecir_goles
-    fetch('http://127.0.0.1:5000/predecir_goles', {
+    // Hago un fetch a https://img-back-l2mniuwzaq-uc.a.run.app/predecir_goles
+    fetch('https://img-back-l2mniuwzaq-uc.a.run.app/predecir_goles', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -209,8 +209,8 @@ export default function Dashboard() {
     console.log("Selected Liga: ", selectedLeague);
     // Jugador
     console.log("Selected Jugador: ", selectedPlayer);
-    // Hago un fetch a http://127.0.0.1:5000/predecir_goles
-    fetch('http://127.0.0.1:5000/predecir_precio', {
+    // Hago un fetch a https://img-back-l2mniuwzaq-uc.a.run.app/predecir_goles
+    fetch('https://img-back-l2mniuwzaq-uc.a.run.app/predecir_precio', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
