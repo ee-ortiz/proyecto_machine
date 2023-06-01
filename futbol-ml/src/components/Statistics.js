@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
+import Typography from '@mui/material/Typography';
 
 // Generate Order Data
 function createData(id, date, name, shipTo, paymentMethod, amount) {
@@ -52,10 +53,16 @@ function preventDefault(event) {
   event.preventDefault();
 }
 
-export default function Statistics() {
+export default function Statistics(props) {
   return (
     <React.Fragment>
-      <Title>Estadisticas del jugador</Title>
-    </React.Fragment>
+      <Title>{props.title}</Title>
+      <Typography component="p" variant="h5">
+        {props.title === "Precio estimado"? props.contenido + "€": "Num Goles: " + props.contenido["resultado"]} 
+        {/* Salto de linea*/}
+        <br/>
+        {props.title === "Precio estimado"? props.contenido + "€": props.contenido["fecha"]} 
+      </Typography>
+  </React.Fragment>
   );
 }

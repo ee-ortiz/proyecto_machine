@@ -11,8 +11,11 @@ export default function PlayerPrice(props) {
   return (
     <React.Fragment>
       <Title>{props.title}</Title>
-      <Typography component="p" variant="h4">
-        {props.title === "Precio estimado"? props.valor + "€": props.valor} 
+      <Typography component="p" variant="h5">
+        {props.title === "Precio estimado"? props.contenido + "€": "Num Goles: " + props.contenido["resultado"]} 
+        {/* Salto de linea*/}
+        <br/>
+        {props.title === "Precio estimado"? props.contenido + "€": props.contenido["fecha"]} 
       </Typography>
     </React.Fragment>
   );

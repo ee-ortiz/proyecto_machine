@@ -1,0 +1,8 @@
+# Archivos y directorios específicos a excluir
+futbol-ml/node_modules
+futbol-ml/build
+futbol-ml-back/__pycache__
+futbol-ml-back/venv
+# Carpeta notebooks en el directorio actual
+notebooks
+.git

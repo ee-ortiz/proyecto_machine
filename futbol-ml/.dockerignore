@@ -1,0 +1,4 @@
+# Archivos y directorios específicos a excluir
+node_modules
+build
+.git

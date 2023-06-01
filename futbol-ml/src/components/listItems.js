@@ -18,17 +18,17 @@ export default function MainListItemsComponent(props){
   return (
     <>
       {/* Radio button con dos opciones: Predecir goles y predecir precio */}
-      <FormControl>
-        <FormLabel id="demo-row-radio-buttons-group-label">Prediccion</FormLabel>
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Predicción</FormLabel>
         <RadioGroup
-          row
-          aria-labelledby="demo-row-radio-buttons-group-label"
-          name="row-radio-buttons-group"
-          defaultValue="precio"
+          aria-label="prediction"
+          defaultValue="goles"
+          name="radio-buttons-group"
+          value={props.prediction}
           onChange={props.handlePredictionChange}
         >
-          <FormControlLabel value="precio" control={<Radio />} label="Precio" />
-          <FormControlLabel value="goles" control={<Radio />} label="Goles" />
+          <FormControlLabel value="goles" control={<Radio />} label="Predecir goles" />
+          <FormControlLabel value="precio" control={<Radio />} label="Predecir precio" />
         </RadioGroup>
       </FormControl>
 
@@ -68,7 +68,7 @@ export default function MainListItemsComponent(props){
           <Box m={2} />
 
           {/* Boton para calcular el precio */}
-          <Button variant="contained" onClick={function () { }}>
+          <Button variant="contained" onClick={props.handleCalcularPrecio}>
             Calcular precio
           </Button>
 
@@ -91,25 +91,11 @@ export default function MainListItemsComponent(props){
           </React.Fragment>
           <React.Fragment>
             <ListSubheader component="div" inset>
-              Elije un equipo local
+              Elije un partido
             </ListSubheader>
             <Autocomplete
-              value={props.selected_equipo_local}
-              onChange={props.handleEquipoLocalChange}
-              options={props.equipos}
-              getOptionLabel={(option) => String(option)}
-              renderInput={(params) => (
-                <TextField {...params} label="Equipo" variant="outlined" />
-              )}
-            />
-          </React.Fragment>
-          <React.Fragment>
-            <ListSubheader component="div" inset>
-              Elije un equipo visitante
-            </ListSubheader>
-            <Autocomplete
-              value={props.selected_equipo_visitante}
-              onChange={props.handleEquipoVisitanteChange}
+              value={props.selected_partido}
+              onChange={props.handleSelectedPartidoChange}
               options={props.equipos}
               getOptionLabel={(option) => String(option)}
               renderInput={(params) => (
@@ -122,7 +108,7 @@ export default function MainListItemsComponent(props){
           <Box m={2} />
 
           {/* Boton para calcular los goles */}
-          <Button variant="contained" onClick={function () { }}>
+          <Button variant="contained" onClick={props.handleCalcularGoles}>
             Calcular goles
           </Button>
 

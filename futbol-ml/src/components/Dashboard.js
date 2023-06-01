@@ -9,18 +9,14 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MainListItemsComponent from './listItems';
 import Chart from './Chart';
-import PlayerPrice from './PlayerPrice';
-import Statistics from './Statistics';
 
 import { useState, useEffect } from 'react';
 
@@ -102,9 +98,10 @@ export default function Dashboard() {
   const [players, setPlayers] = useState([]);
   const [selectedPlayer, setSelectedPlayer] = useState([]);
   const [equipos, setEquipos] = useState([]);
-  const [selected_equipo_local, setSelected_equipo_local] = useState([]);
-  const [selected_equipo_visitante, setSelected_equipo_visitante] = useState([]);
-  const [prediction, setPrediction] = useState('precio');
+  const [selected_partido, setselected_partido] = useState([]);
+  const [prediction, setPrediction] = useState('goles');
+  const [prediction_goles, setPrediction_goles] = useState([]);
+  const [prediction_precio, setPrediction_precio] = useState([]);
 
   // Set de jugadores obtenido por un fetch en http://127.0.0.1:5000/obtener_jugadores
   useEffect(() => {
@@ -124,9 +121,9 @@ export default function Dashboard() {
       });
   }, [body_fetch_jugadores]);
 
-  // Set de equipos obtenido por un fetch en http://127.0.0.1:5000/obtener_equipos
+  // Set de equipos obtenido por un fetch en http://127.0.0.1:5000/partidos
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/obtener_equipos', {
+    fetch('http://127.0.0.1:5000/partidos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -171,18 +168,64 @@ export default function Dashboard() {
     setSelectedPlayer(value);
   };
 
-  const handleEquipoLocalChange = (event, value) => {
-    setSelected_equipo_local(value);
+  const handleSelectedPartidoChange = (event, value) => {
+    setselected_partido(value);
   };
 
-  const handleEquipoVisitanteChange = (event, value) => {
-    setSelected_equipo_visitante(value);
-  };
 
   const handlePredictionChange = (event) => {
     setPrediction(event.target.value);
   };
 
+  const handleCalcularGoles = (event) => {
+    console.log("Selected Liga: ", selectedLeague);
+    
+    // Un partido es un string de la forma "A VS B"
+    // Quiero obtener el equipo A de selected_partido
+    let equipo_local_partido = selected_partido.split(" VS ")[0];
+    // Quiero obtener el equipo B de selected_partido
+    let equipo_visitante_partido = selected_partido.split(" VS ")[1];
+
+    // Hago un fetch a http://127.0.0.1:5000/predecir_goles
+    fetch('http://127.0.0.1:5000/predecir_goles', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ liga: body_fetch_jugadores, equipo_local: equipo_local_partido, equipo_visitante: equipo_visitante_partido }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Data: ", data);
+        setPrediction_goles(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+
+  const handleCalcularPrecio = (event) => {
+    console.log("Selected Liga: ", selectedLeague);
+    // Jugador
+    console.log("Selected Jugador: ", selectedPlayer);
+    // Hago un fetch a http://127.0.0.1:5000/predecir_goles
+    fetch('http://127.0.0.1:5000/predecir_precio', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({nombre_jugador: selectedPlayer }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Data: ", data);
+        setPrediction_precio(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -213,7 +256,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Bet Analysis: Predicciones futbolísticas basadas en datos
+              Fut Analysis: Predicciones futbolísticas basadas en datos
             </Typography>
           </Toolbar>
         </AppBar>
@@ -239,9 +282,11 @@ export default function Dashboard() {
               selectedLeague={selectedLeague}
               players={players} handlePlayerChange={handlePlayerChange}
               selectedPlayer={selectedPlayer}
-              equipos={equipos} handleEquipoLocalChange={handleEquipoLocalChange} handleEquipoVisitanteChange={handleEquipoVisitanteChange}
-              selected_equipo_local={selected_equipo_local} selected_equipo_visitante={selected_equipo_visitante}
+              equipos={equipos} handleSelectedPartidoChange={handleSelectedPartidoChange}
+              selected_partido={selected_partido}
               prediction={prediction} handlePredictionChange={handlePredictionChange}
+              handleCalcularGoles = {handleCalcularGoles}
+              handleCalcularPrecio = {handleCalcularPrecio}
             />
             
           </List>
@@ -274,23 +319,9 @@ export default function Dashboard() {
                     height: 240,
                   }}
                 >
-                  <Chart title={prediction === "precio"? "Desempeño Esperado": "Estadísticas Equipos"}/>
+                  <Chart prediction = {prediction} title={prediction === "precio"? "Precio estimado": "Predicción de goles"} prediction_precio = {prediction_precio} prediction_goles = {prediction_goles}/>
                 </Paper>
               </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <PlayerPrice title={prediction === "precio"? "Precio estimado": "Prediccion de goles"}/>
-                </Paper>
-              </Grid>
-
             </Grid>
             <Copyright sx={{ pt: 4 }} />
           </Container>
